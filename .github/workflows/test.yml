@@ -1,0 +1,119 @@
+jobs:
+  code-quality:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        extensions: curl, json
+        php-version: '8.3'
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress
+    - name: Run PHPStan (strict)
+      run: composer phpstan -- --error-format=github
+    - name: Check code style
+      run: composer cs:check -- --report=checkstyle
+  e2e-tests:
+    if: github.event_name == 'push' || github.event_name == 'schedule'
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        extensions: curl, json, mbstring
+        php-version: '8.3'
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress
+    - continue-on-error: true
+      env:
+        CIRCULAR_API_KEY: ${{ secrets.CIRCULAR_API_KEY }}
+        CIRCULAR_NAG_URL: ${{ secrets.CIRCULAR_NAG_URL }}
+        CIRCULAR_TEST_ADDRESS: ${{ secrets.CIRCULAR_TEST_ADDRESS }}
+        CIRCULAR_TEST_BLOCKCHAIN: ${{ secrets.CIRCULAR_TEST_BLOCKCHAIN }}
+      name: Run E2E tests (read-only)
+      run: composer test -- --group e2e
+  publish-packagist:
+    if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/development') && github.event_name == 'push'
+    needs:
+    - test
+    - code-quality
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.3'
+    - name: Validate package
+      run: composer validate --strict
+    - continue-on-error: true
+      if: github.ref == 'refs/heads/main'
+      name: Create git tag (if version updated)
+      run: |-
+        VERSION=$(composer config version)
+        if git rev-parse "v$VERSION" >/dev/null 2>&1; then
+          echo "Tag v$VERSION already exists"
+        else
+          git tag "v$VERSION"
+          git push origin "v$VERSION"
+          echo "Created and pushed tag v$VERSION"
+        fi
+    - continue-on-error: true
+      name: Trigger Packagist webhook
+      run: curl -X POST \"https://packagist.org/api/update-package?username=${{ secrets.PACKAGIST_USERNAME }}&apiToken=${{ secrets.PACKAGIST_TOKEN }}\"
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Setup PHP ${{ matrix.php-version }}
+      uses: shivammathur/setup-php@v2
+      with:
+        coverage: xdebug
+        extensions: curl, json, mbstring
+        php-version: ${{ matrix.php-version }}
+    - name: Validate composer.json
+      run: composer validate --strict
+    - name: Cache Composer dependencies
+      uses: actions/cache@v4
+      with:
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        path: vendor
+        restore-keys: ${{ runner.os }}-php-
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress
+    - continue-on-error: true
+      name: Run PHPStan (static analysis)
+      run: composer phpstan
+    - continue-on-error: true
+      name: Run CodeSniffer (code style)
+      run: composer cs:check
+    - name: Run PHPUnit unit tests
+      run: composer test -- --exclude-group e2e
+    - if: matrix.php-version == '8.3'
+      name: Generate coverage report
+      run: composer test:coverage
+    strategy:
+      matrix:
+        php-version:
+        - '8.0'
+        - '8.1'
+        - '8.2'
+        - '8.3'
+name: Test and Build
+on:
+  pull_request:
+    branches:
+    - main
+    - development
+  push:
+    branches:
+    - main
+    - development

@@ -1,24 +1,57 @@
 {
-    "name": "circular-protocol/circular-protocol-api",
-    "description": "Official Circular Protocol's blockchain PHP API.",
-    "require": {
-        "php": ">=8.0",
-        "simplito/elliptic-php": "^1.0.12"
-    },
-    "license": "MIT",
-    "autoload": {
-        "psr-4": {
-            "CircularProtocol\\Api\\": "lib/"
-        }
-    },
+  "composer_json": {
     "authors": [
-        {
-            "name": "Danny De Novi",
-            "email": "dannydenovi29@gmail.com"
-        },
-        {
-          "name": "Eric D. Wade",
-          "email": "nandesu@gmail.com"
-        }
-    ]
+      {
+        "email": "dev@circular.org",
+        "name": "Danny De Novi"
+      }
+    ],
+    "autoload": {
+      "psr-4": {
+        "Circular\\Protocol\\": "src/"
+      }
+    },
+    "autoload-dev": {
+      "psr-4": {
+        "Circular\\Protocol\\Tests\\": "tests/"
+      }
+    },
+    "config": {
+      "sort-packages": true
+    },
+    "description": "Official PHP SDK for Circular Protocol blockchain operations and wallet management",
+    "homepage": "https://github.com/circular-protocol/circular-canonical",
+    "keywords": [
+      "blockchain",
+      "circular",
+      "protocol",
+      "sdk",
+      "api",
+      "crypto",
+      "web3"
+    ],
+    "license": "MIT",
+    "minimum-stability": "stable",
+    "name": "circular/protocol-api",
+    "prefer-stable": true,
+    "require": {
+      "ext-curl": "*",
+      "ext-json": "*",
+      "php": "^8.0"
+    },
+    "require-dev": {
+      "phpstan/phpstan": "^1.10",
+      "phpunit": "^10.0",
+      "squizlabs/php_codesniffer": "^3.7"
+    },
+    "scripts": {
+      "cs:check": "phpcs src tests",
+      "cs:fix": "phpcbf src tests",
+      "phpstan": "phpstan analyse src tests",
+      "test": "phpunit",
+      "test:coverage": "phpunit --coverage-html coverage"
+    },
+    "type": "library",
+    "version": "1.0.8"
+  }
 }
