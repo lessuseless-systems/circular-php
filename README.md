@@ -29,8 +29,8 @@ composer require circular/circular-protocol
 
 require_once 'vendor/autoload.php';
 
-use Circular\\CircularProtocolAPI;
-use Circular\\CircularAPIException;
+use Circular\Protocol\CircularProtocolAPI;
+use Circular\Protocol\CircularProtocolException;
 
 // Initialize the API client
 $api = new CircularProtocolAPI(
@@ -40,16 +40,32 @@ $api = new CircularProtocolAPI(
 
 try {
     // Check if a wallet exists
+    // Note: Version auto-injected, 0x prefix auto-stripped
     $result = $api->checkWallet([
         'Address' => '0xd55872dbe508fd27445889b9d81bbc9411bb0f1353153a249f2fb34ef2690310',
-        'Blockchain' => 'MainNet',
-        'Version' => '1.0.8'
+        'Blockchain' => 'MainNet'
     ]);
 
-    echo "Wallet exists: " . $result['Response'] . "\\n";
-} catch (CircularAPIException $e) {
-    echo "API Error: " . $e->getMessage() . "\\n";
+    echo "Wallet exists: " . $result['Response'] . "\n";
+} catch (CircularProtocolException $e) {
+    echo "API Error: " . $e->getMessage() . "\n";
 }
+```
+
+### ✨ Auto-Preprocessing (v1.0.9+)
+
+The SDK automatically handles common parameter transformations:
+
+```php
+// Auto-strips 0x prefix from hex fields
+$api->checkWallet(['Address' => '0xabc...']); // Processed as 'abc...'
+
+// Auto-injects Version if not provided
+$api->getWallet(['Address' => '...']); // Version: '1.0.9' added automatically
+
+// Configure auto-preprocessing (enabled by default)
+$api->setAutoPreprocess(false); // Disable if needed
+$api->setDefaultVersion('2.0.0'); // Change default version
 ```
 
 ## 📜 API Reference
@@ -58,57 +74,57 @@ The Circular Protocol PHP SDK provides **39 methods** across multiple categories
 
 ### Wallet Operations (5 methods)
 
-- **`checkWallet`** - Verify wallet existence on the blockchain
-- **`getWallet`** - Retrieve complete wallet details and metadata
-- **`getLatestTransactions`** - Get recent wallet activity and transaction history
-- **`getWalletBalance`** - Query current wallet balance across assets
-- **`getWalletNonce`** - Get transaction nonce for the wallet
+- **`checkWallet()`** - Verify wallet existence on the blockchain
+- **`getWallet()`** - Retrieve complete wallet details and metadata
+- **`getLatestTransactions()`** - Get recent wallet activity and transaction history
+- **`getWalletBalance()`** - Query current wallet balance across assets
+- **`getWalletNonce()`** - Get transaction nonce for the wallet
 
 ### Transaction Operations (6 methods)
 
-- **`sendTransaction`** - Submit new transaction to the blockchain
-- **`getPendingTransaction`** - Check transaction status in the mempool
-- **`getTransactionbyID`** - Query transaction by unique identifier
-- **`getTransactionbyNode`** - Query transactions by validator node
-- **`getTransactionbyAddress`** - Query all transactions for a wallet address
-- **`getTransactionbyDate`** - Query transactions within a date range
+- **`sendTransaction()`** - Submit new transaction to the blockchain
+- **`getPendingTransaction()`** - Check transaction status in the mempool
+- **`getTransactionById()`** - Query transaction by unique identifier
+- **`getTransactionByNode()`** - Query transactions by validator node
+- **`getTransactionByAddress()`** - Query all transactions for a wallet address
+- **`getTransactionByDate()`** - Query transactions within a date range
 
 ### Block Operations (4 methods)
 
-- **`getBlock`** - Retrieve block data by block number or hash
-- **`getBlockRange`** - Query multiple blocks within a range
-- **`getBlockCount`** - Get current blockchain height (latest block number)
-- **`getAnalytics`** - Retrieve blockchain performance metrics and analytics
+- **`getBlock()`** - Retrieve block data by block number or hash
+- **`getBlockRange()`** - Query multiple blocks within a range
+- **`getBlockCount()`** - Get current blockchain height (latest block number)
+- **`getAnalytics()`** - Retrieve blockchain performance metrics and analytics
 
 ### Contract Operations (2 methods)
 
-- **`testContract`** - Validate smart contract logic before deployment
-- **`callContract`** - Execute smart contract function call
+- **`testContract()`** - Validate smart contract logic before deployment
+- **`callContract()`** - Execute smart contract function call
 
 ### Asset Operations (4 methods)
 
-- **`getAssetList`** - List all available assets on the blockchain
-- **`getAsset`** - Get detailed asset information and metadata
-- **`getAssetSupply`** - Query total and circulating supply for an asset
-- **`getVoucher`** - Retrieve voucher data and redemption details
+- **`getAssetList()`** - List all available assets on the blockchain
+- **`getAsset()`** - Get detailed asset information and metadata
+- **`getAssetSupply()`** - Query total and circulating supply for an asset
+- **`getVoucher()`** - Retrieve voucher data and redemption details
 
 ### Domain Operations (1 method)
 
-- **`getDomain`** - Query blockchain domain registry (resolve domain to address)
+- **`getDomain()`** - Query blockchain domain registry (resolve domain to address)
 
 ### Network Operations (1 method)
 
-- **`getBlockchains`** - List all supported blockchain networks
+- **`getBlockchains()`** - List all supported blockchain networks
 
 ---
 
 ### Cryptographic Helpers (5 methods)
 
-- **`signMessage`** - Generate ECDSA secp256k1 signatures (DER format)
-- **`verifySignature`** - Verify message signatures against public keys
-- **`getPublicKey`** - Derive public key from private key (128 hex characters, uncompressed, no 0x04 prefix)
-- **`hashString`** - Generate SHA-256 hash of string input
-- **`getFormattedTimestamp`** - Get current UTC timestamp in Circular Protocol format (`YYYY:MM:DD-HH:mm:ss`)
+- **`signMessage()`** - Generate ECDSA secp256k1 signatures (DER format)
+- **`verifySignature()`** - Verify message signatures against public keys
+- **`getPublicKey()`** - Derive public key from private key (128 hex characters, uncompressed, no 0x04 prefix)
+- **`hashString()`** - Generate SHA-256 hash of string input
+- **`getFormattedTimestamp()`** - Get current UTC timestamp in Circular Protocol format (`YYYY:MM:DD-HH:mm:ss`)
 
 **Implementation Details:**
 - **TypeScript/JavaScript**: `crypto-browserify` (browser-compatible)
@@ -122,18 +138,18 @@ The Circular Protocol PHP SDK provides **39 methods** across multiple categories
 
 ### Encoding Helpers (4 methods)
 
-- **`hexFix`** - Normalize hex strings (remove `0x` prefix if present)
-- **`stringToHex`** - Convert UTF-8 string to hexadecimal encoding
-- **`hexToString`** - Convert hexadecimal string to UTF-8
-- **`padNumber`** - Zero-pad single-digit numbers (e.g., `5` → `"05"`)
+- **`hexFix()`** - Normalize hex strings (remove `0x` prefix if present)
+- **`stringToHex()`** - Convert UTF-8 string to hexadecimal encoding
+- **`hexToString()`** - Convert hexadecimal string to UTF-8
+- **`padNumber()`** - Zero-pad single-digit numbers (e.g., `5` → `"05"`)
 
 ---
 
 ### Advanced Helpers (3 methods)
 
-- **`GetError`** - Retrieve last error message from SDK
-- **`handleError`** - Internal error tracking and logging
-- **`getTransactionOutcome`** - Poll for transaction confirmation with automatic retries
+- **`getError()`** - Retrieve last error message from SDK
+- **`handleError()`** - Internal error tracking and logging
+- **`getTransactionOutcome()`** - Poll for transaction confirmation with automatic retries
 
 **Transaction Polling Behavior:**
 - Checks transaction status every **5 seconds** (configurable via `intervalSec`)
@@ -146,7 +162,7 @@ The Circular Protocol PHP SDK provides **39 methods** across multiple categories
 
 ### Convenience Methods (1 method)
 
-- **`registerWallet`** - Simplified wallet registration (wraps `sendTransaction`)
+- **`registerWallet()`** - Simplified wallet registration (wraps `sendTransaction()`)
 
 **Implementation:**
 - Automatically derives `From` and `To` addresses via `hashString(publicKey)`
@@ -185,9 +201,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## ℹ️ About
 
-**Version**: 1.0.8
+**Version**: 1.0.9
 **License**: MIT
-**Generated**: Auto-generated from [Circular Canonical](https://github.com/circular-protocol/circular-canonical) specification
+**Repository**: [circular-php](https://github.com/circular-protocol/circular-php)
 
 ---
 

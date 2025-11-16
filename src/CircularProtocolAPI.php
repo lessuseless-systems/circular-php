@@ -3,11 +3,12 @@
 namespace Circular\Protocol;
 
 use Exception;
+use phpseclib3\Crypt\EC;
+use phpseclib3\Math\BigInteger;
 
 /**
  * Circular Protocol PHP SDK
- * Generated from Nickel API specification
- * Version: 1.0.8
+ * Version: 1.0.9
  *
  * Provides access to all Circular Protocol blockchain API endpoints.
  *
@@ -17,7 +18,7 @@ use Exception;
  * $response = $api->checkWallet([
  *     'Address' => '0x...',
  *     'Blockchain' => 'MainNet',
- *     'Version' => '1.0.8'
+ *     'Version' => '1.0.9'
  * ]);
  * </code>
  */
@@ -31,8 +32,15 @@ class CircularProtocolAPI
 
     /** @var array<string, string> HTTP headers */
     private array $headers;
-/** @var string Last error message */
-private string $lastError = '';
+
+    /** @var string Last error message */
+    private string $lastError = '';
+
+    /** @var bool Enable automatic preprocessing of parameters */
+    private bool $autoPreprocess = true;
+
+    /** @var string Default API version */
+    private string $defaultVersion = '1.0.9';
 
     /**
      * Create a new Circular Protocol API client
@@ -90,6 +98,84 @@ private string $lastError = '';
     }
 
     /**
+     * Enable or disable automatic preprocessing
+     *
+     * @param bool $enabled Enable automatic preprocessing
+     * @return void
+     */
+    public function setAutoPreprocess(bool $enabled): void
+    {
+        $this->autoPreprocess = $enabled;
+    }
+
+    /**
+     * Check if auto-preprocessing is enabled
+     *
+     * @return bool True if enabled
+     */
+    public function getAutoPreprocess(): bool
+    {
+        return $this->autoPreprocess;
+    }
+
+    /**
+     * Set default API version
+     *
+     * @param string $version Default version string
+     * @return void
+     */
+    public function setDefaultVersion(string $version): void
+    {
+        $this->defaultVersion = $version;
+    }
+
+    /**
+     * Get default API version
+     *
+     * @return string Default version
+     */
+    public function getDefaultVersion(): string
+    {
+        return $this->defaultVersion;
+    }
+
+    /**
+     * Preprocess request parameters
+     * - Auto-strips 0x prefix from hex strings
+     * - Auto-injects Version if not present
+     * - Validates required fields
+     *
+     * @param array $data Request data
+     * @return array Preprocessed data
+     */
+    private function preprocessRequest(array $data): array
+    {
+        if (!$this->autoPreprocess) {
+            return $data;
+        }
+
+        // Auto-inject version if not present
+        if (!isset($data['Version']) && !empty($this->defaultVersion)) {
+            $data['Version'] = $this->defaultVersion;
+        }
+
+        // Auto-strip 0x prefix from common hex fields
+        $hexFields = [
+            'Address', 'From', 'To', 'ID', 'TransactionID',
+            'Signature', 'PublicKey', 'Payload', 'Blockchain',
+            'VoucherID', 'ContractAddress', 'Asset', 'Code'
+        ];
+
+        foreach ($hexFields as $field) {
+            if (isset($data[$field]) && is_string($data[$field])) {
+                $data[$field] = $this->hexFix($data[$field]);
+            }
+        }
+
+        return $data;
+    }
+
+    /**
      * Make HTTP request to NAG endpoint
      *
      * @param string $endpoint Endpoint path (e.g., '/checkWallet')
@@ -99,6 +185,9 @@ private string $lastError = '';
      */
     private function makeRequest(string $endpoint, array $data): array
     {
+        // Preprocess request data
+        $data = $this->preprocessRequest($data);
+
         $url = $this->nagUrl . 'Circular_' . $endpoint . '_';
 
         // Build headers
@@ -254,7 +343,7 @@ including ID, addresses, payload, nonce, and signature.
  * @return array Response with Result and Response fields
  * @throws CircularProtocolException
  */
-public function addTransaction(array $request): array
+public function sendTransaction(array $request): array
 {
     return $this->makeRequest('AddTransaction', $request);
 }
@@ -280,7 +369,7 @@ Searches through blocks to locate the transaction.
  * @return array Response with Result and Response fields
  * @throws CircularProtocolException
  */
-public function getTransactionbyID(array $request): array
+public function getTransactionById(array $request): array
 {
     return $this->makeRequest('GetTransactionbyID', $request);
 }
@@ -293,7 +382,7 @@ Returns all transactions associated with the node.
  * @return array Response with Result and Response fields
  * @throws CircularProtocolException
  */
-public function getTransactionbyNode(array $request): array
+public function getTransactionByNode(array $request): array
 {
     return $this->makeRequest('GetTransactionbyNode', $request);
 }
@@ -306,7 +395,7 @@ Returns transactions where the address is sender or recipient.
  * @return array Response with Result and Response fields
  * @throws CircularProtocolException
  */
-public function getTransactionbyAddress(array $request): array
+public function getTransactionByAddress(array $request): array
 {
     return $this->makeRequest('GetTransactionbyAddress', $request);
 }
@@ -319,7 +408,7 @@ Returns all transactions for the address between the dates.
  * @return array Response with Result and Response fields
  * @throws CircularProtocolException
  */
-public function getTransactionbyDate(array $request): array
+public function getTransactionByDate(array $request): array
 {
     return $this->makeRequest('GetTransactionbyDate', $request);
 }
@@ -352,7 +441,6 @@ public function getBlockRange(array $request): array
 /**
  * Get blockchain height
  * Retrieves the blockchain block height (total number of blocks).
-Also known as getBlockHeight in some documentation.
  *
  * @param array $request Request parameters
  * @return array Response with Result and Response fields
@@ -360,7 +448,7 @@ Also known as getBlockHeight in some documentation.
  */
 public function getBlockCount(array $request): array
 {
-    return $this->makeRequest('GetBlockCount', $request);
+    return $this->makeRequest('GetBlockHeight', $request);
 }
 /**
  * Get blockchain analytics
@@ -457,7 +545,6 @@ public function getVoucher(array $request): array
  * Resolve domain to wallet address
  * Resolves a domain name to a wallet address.
 A single wallet can have multiple domain associations.
-Also known as resolveDomain.
  *
  * @param array $request Request parameters
  * @return array Response with Result and Response fields
@@ -465,7 +552,7 @@ Also known as resolveDomain.
  */
 public function getDomain(array $request): array
 {
-    return $this->makeRequest('GetDomain', $request);
+    return $this->makeRequest('ResolveDomain', $request);
 }
 /**
  * List available blockchains
@@ -487,64 +574,29 @@ public function getBlockchains(array $request): array
     // These methods wrap underlying API calls to simplify common workflows
 
 /**
- * Register wallet on blockchain (Convenience Method)
- * Registers a wallet on the specified blockchain by creating and sending
-a C_TYPE_REGISTERWALLET transaction. This convenience method handles all
-transaction construction internally:
-
-- Derives From/To addresses from public key (sha256)
-- Builds Payload: hex(JSON.stringify({Action: "CP_REGISTERWALLET", PublicKey: publicKey}))
-- Calculates transaction ID: sha256(blockchain + from + to + payload + nonce + timestamp)
-- Sets Nonce to "0" and Signature to "" (empty for registration)
-- Calls sendTransaction with constructed parameters
-
-Without registration, the wallet will not be reachable on the blockchain.
-The same wallet can be registered on multiple blockchains.
+ * Register wallet on blockchain
+ * Registers a wallet on the specified blockchain. Accepts either a full request
+ * array or will use sendTransaction directly.
  *
- * This is a convenience method that wraps sendTransaction().
- * It handles transaction construction internally.
+ * Without registration, the wallet will not be reachable on the blockchain.
+ * The same wallet can be registered on multiple blockchains.
  *
- * @param string $blockchain Blockchain where the wallet will be registered
- * @param string $publicKey Wallet public key (128 hex characters)
- * @return array Same as send_transaction response
+ * Expected request format:
+ * {
+ *   "Blockchain": "0x...",
+ *   "AccountName": "myaccount",
+ *   "PublicKey": "128-character-hex-pubkey",
+ *   "Signature": "signature-of-blockchain+accountname+publickey",
+ *   "Version": "1.0.9"
+ * }
+ *
+ * @param array $request Request parameters for wallet registration
+ * @return array API response with Result and Response fields
  * @throws CircularProtocolException
  */
-public function register_wallet(string $blockchain, string $publicKey): array
+public function registerWallet(array $request): array
 {
-    // Derive addresses from public key
-    $from = $this->hashString($publicKey);
-    $to = $from;
-    $nonce = '0';
-    $type = 'C_TYPE_REGISTERWALLET';
-
-    // Build payload
-    $payloadObj = [
-        'Action' => 'CP_REGISTERWALLET',
-        'PublicKey' => $publicKey
-    ];
-    $payload = $this->stringToHex(json_encode($payloadObj, JSON_UNESCAPED_SLASHES));
-    $timestamp = $this->getFormattedTimestamp();
-
-    // Calculate transaction ID
-    $id = $this->hashString($blockchain . $from . $to . $payload . $nonce . $timestamp);
-    $signature = '';
-
-    // Build request
-    $request = [
-        'ID' => $id,
-        'From' => $from,
-        'To' => $to,
-        'Timestamp' => $timestamp,
-        'Type' => $type,
-        'Payload' => $payload,
-        'Nonce' => $nonce,
-        'Signature' => $signature,
-        'Blockchain' => $blockchain,
-        'Version' => '1.0.8'
-    ];
-
-    // Call sendTransaction
-    return $this->send_transaction($request);
+    return $this->makeRequest('RegisterWallet', $request);
 }
 
     // ============================================================================
@@ -671,7 +723,7 @@ public function hashString(string $str): string {
  * @param string $hexString Hex string with or without 0x prefix
  * @return string Normalized hex string without 0x prefix
  */
-private function hexFix(string $hexString): string {
+public function hexFix(string $hexString): string {
     if (str_starts_with($hexString, '0x') || str_starts_with($hexString, '0X')) {
         return substr($hexString, 2);
     }
@@ -788,7 +840,7 @@ public function getTransactionOutcome(
 
         try {
             // Check transaction status
-            $tx = $this->getTransactionbyID([
+            $tx = $this->getTransactionById([
                 'Blockchain' => $blockchain,
                 'ID' => $txID,
                 'Start' => $start,

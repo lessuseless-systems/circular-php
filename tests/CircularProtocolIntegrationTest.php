@@ -1,9 +1,9 @@
 <?php
 
-namespace CircularProtocol\Tests;
+namespace Circular\Protocol\Tests;
 
 use PHPUnit\Framework\TestCase;
-use CircularProtocol\CircularProtocolAPI;
+use Circular\Protocol\CircularProtocolAPI;
 
 /**
  * Circular Protocol PHP SDK Integration Tests
@@ -182,7 +182,7 @@ $this->assertGreaterThanOrEqual(0, $result['Response']['nonce']);
 'Version' => '1.0.8',
         ];
 
-        $result = $this->api->addTransaction($request);
+        $result = $this->api->sendTransaction($request);
 
 $this->assertEquals(200, $result['Result']);
 $this->assertNotNull($result['Response']['transaction_id']);
@@ -221,7 +221,7 @@ $this->assertIsArray($result['Response']['transactions']);
 'Version' => '1.0.8',
         ];
 
-        $result = $this->api->getTransactionbyAddress($request);
+        $result = $this->api->getTransactionByAddress($request);
 
 $this->assertEquals(200, $result['Result']);
 $this->assertIsArray($result['Response']['transactions']);
@@ -242,7 +242,7 @@ $this->assertIsArray($result['Response']['transactions']);
 'Version' => '1.0.8',
         ];
 
-        $result = $this->api->getTransactionbyDate($request);
+        $result = $this->api->getTransactionByDate($request);
 
 $this->assertEquals(200, $result['Result']);
 $this->assertIsArray($result['Response']['transactions']);
@@ -262,7 +262,7 @@ $this->assertIsArray($result['Response']['transactions']);
 'Version' => '1.0.8',
         ];
 
-        $result = $this->api->getTransactionbyID($request);
+        $result = $this->api->getTransactionById($request);
 
 $this->assertEquals(200, $result['Result']);
 $this->assertNotNull($result['Response']['transaction']);
@@ -282,7 +282,7 @@ $this->assertNotNull($result['Response']['transaction']);
 'Version' => '1.0.8',
         ];
 
-        $result = $this->api->getTransactionbyNode($request);
+        $result = $this->api->getTransactionByNode($request);
 
 $this->assertEquals(200, $result['Result']);
 $this->assertIsArray($result['Response']['transactions']);

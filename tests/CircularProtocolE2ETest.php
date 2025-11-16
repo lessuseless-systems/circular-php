@@ -103,7 +103,7 @@ class CircularProtocolE2ETest extends TestCase
 
         $result = $this->api->checkWallet($request);
 
-$this->assertNotNull($result['Result'])
+$this->assertNotNull($result['Result']);;
 
         echo "  ✅ E2E: Check if test wallet exists on blockchain\n";
     }
@@ -120,7 +120,7 @@ $this->assertNotNull($result['Result'])
 
         $result = $this->api->getLatestTransactions($request);
 
-$this->assertNotNull($result['Result'])
+$this->assertNotNull($result['Result']);
 
         echo "  ✅ E2E: Get latest transactions for wallet\n";
     }
@@ -137,7 +137,7 @@ $this->assertNotNull($result['Result'])
 
         $result = $this->api->getWallet($request);
 
-$this->assertNotNull($result['Result'])
+$this->assertNotNull($result['Result']);
 
         echo "  ✅ E2E: Retrieve wallet details from blockchain\n";
     }
@@ -155,7 +155,7 @@ $this->assertNotNull($result['Result'])
 
         $result = $this->api->getWalletBalance($request);
 
-$this->assertNotNull($result['Result'])
+$this->assertNotNull($result['Result']);
 
         echo "  ✅ E2E: Get wallet balance from blockchain\n";
     }
@@ -172,7 +172,7 @@ $this->assertNotNull($result['Result'])
 
         $result = $this->api->getWalletNonce($request);
 
-$this->assertNotNull($result['Result'])
+$this->assertNotNull($result['Result']);
 
         echo "  ✅ E2E: Get wallet nonce from blockchain\n";
     }
@@ -190,7 +190,7 @@ $this->assertNotNull($result['Result'])
 
         $result = $this->api->getPendingTransaction($request);
 
-$this->assertNotNull($result['Result'])
+$this->assertNotNull($result['Result']);
 
         echo "  ✅ E2E: Get pending transactions\n";
     }
@@ -205,9 +205,9 @@ $this->assertNotNull($result['Result'])
         $requestJson = str_replace('${CIRCULAR_TEST_BLOCKCHAIN}', getenv('CIRCULAR_TEST_BLOCKCHAIN') ?: 'MainNet', $requestJson);
         $request = json_decode($requestJson, true);
 
-        $result = $this->api->getTransactionbyAddress($request);
+        $result = $this->api->getTransactionByAddress($request);
 
-$this->assertNotNull($result['Result'])
+$this->assertNotNull($result['Result']);
 
         echo "  ✅ E2E: Get transactions by wallet address\n";
     }
@@ -223,9 +223,9 @@ $this->assertNotNull($result['Result'])
         $requestJson = str_replace('${CIRCULAR_TEST_BLOCKCHAIN}', getenv('CIRCULAR_TEST_BLOCKCHAIN') ?: 'MainNet', $requestJson);
         $request = json_decode($requestJson, true);
 
-        $result = $this->api->getTransactionbyDate($request);
+        $result = $this->api->getTransactionByDate($request);
 
-$this->assertNotNull($result['Result'])
+$this->assertNotNull($result['Result']);
 
         echo "  ✅ E2E: Get transactions by date range\n";
     }
@@ -240,9 +240,9 @@ $this->assertNotNull($result['Result'])
         $requestJson = str_replace('${CIRCULAR_TEST_BLOCKCHAIN}', getenv('CIRCULAR_TEST_BLOCKCHAIN') ?: 'MainNet', $requestJson);
         $request = json_decode($requestJson, true);
 
-        $result = $this->api->getTransactionbyID($request);
+        $result = $this->api->getTransactionById($request);
 
-$this->assertNotNull($result['Result'])
+$this->assertNotNull($result['Result']);
 
         echo "  ✅ E2E: Get transaction by transaction ID\n";
     }
@@ -257,9 +257,9 @@ $this->assertNotNull($result['Result'])
         $requestJson = str_replace('${CIRCULAR_TEST_BLOCKCHAIN}', getenv('CIRCULAR_TEST_BLOCKCHAIN') ?: 'MainNet', $requestJson);
         $request = json_decode($requestJson, true);
 
-        $result = $this->api->getTransactionbyNode($request);
+        $result = $this->api->getTransactionByNode($request);
 
-$this->assertNotNull($result['Result'])
+$this->assertNotNull($result['Result']);
 
         echo "  ✅ E2E: Get transactions by node ID\n";
     }
@@ -278,7 +278,7 @@ $this->assertNotNull($result['Result'])
 
         $result = $this->api->getAsset($request);
 
-$this->assertNotNull($result['Result'])
+$this->assertNotNull($result['Result']);
 
         echo "  ✅ E2E: Get specific asset information\n";
     }
@@ -294,7 +294,7 @@ $this->assertNotNull($result['Result'])
 
         $result = $this->api->getAssetList($request);
 
-$this->assertNotNull($result['Result'])
+$this->assertNotNull($result['Result']);
 
         echo "  ✅ E2E: Get list of all assets on blockchain\n";
     }
@@ -311,7 +311,7 @@ $this->assertNotNull($result['Result'])
 
         $result = $this->api->getAssetSupply($request);
 
-$this->assertNotNull($result['Result'])
+$this->assertNotNull($result['Result']);
 
         echo "  ✅ E2E: Get asset supply information\n";
     }
@@ -328,7 +328,7 @@ $this->assertNotNull($result['Result'])
 
         $result = $this->api->getVoucher($request);
 
-$this->assertNotNull($result['Result'])
+$this->assertNotNull($result['Result']);
 
         echo "  ✅ E2E: Get voucher details\n";
     }
@@ -345,8 +345,8 @@ $this->assertNotNull($result['Result'])
 
         $result = $this->api->getBlockchains($request);
 
-$this->assertEquals(200, $result['Result'])
-$this->assertIsArray($result['Response']['Blockchains'])
+$this->assertEquals(200, $result['Result']);
+$this->assertIsArray($result['Response']['Blockchains']);
 
         echo "  ✅ E2E: Retrieve list of available blockchains\n";
     }
@@ -364,7 +364,7 @@ $this->assertIsArray($result['Response']['Blockchains'])
 
         $result = $this->api->getAnalytics($request);
 
-$this->assertNotNull($result['Result'])
+$this->assertNotNull($result['Result']);
 
         echo "  ✅ E2E: Get blockchain analytics and statistics\n";
     }
@@ -381,7 +381,7 @@ $this->assertNotNull($result['Result'])
 
         $result = $this->api->getBlock($request);
 
-$this->assertNotNull($result['Result'])
+$this->assertNotNull($result['Result']);
 
         echo "  ✅ E2E: Retrieve specific block by number\n";
     }
@@ -397,7 +397,7 @@ $this->assertNotNull($result['Result'])
 
         $result = $this->api->getBlockCount($request);
 
-$this->assertNotNull($result['Result'])
+$this->assertNotNull($result['Result']);
 
         echo "  ✅ E2E: Get current block count from blockchain\n";
     }
@@ -415,7 +415,7 @@ $this->assertNotNull($result['Result'])
 
         $result = $this->api->getBlockRange($request);
 
-$this->assertNotNull($result['Result'])
+$this->assertNotNull($result['Result']);
 
         echo "  ✅ E2E: Retrieve range of blocks\n";
     }
@@ -434,7 +434,7 @@ $this->assertNotNull($result['Result'])
 
         $result = $this->api->getDomain($request);
 
-$this->assertNotNull($result['Result'])
+$this->assertNotNull($result['Result']);
 
         echo "  ✅ E2E: Resolve domain name to wallet address\n";
     }
@@ -455,7 +455,7 @@ $this->assertNotNull($result['Result'])
 
         $result = $this->api->testContract($request);
 
-$this->assertNotNull($result['Result'])
+$this->assertNotNull($result['Result']);
 
         echo "  ✅ E2E: Test smart contract execution (simulation)\n";
     }
@@ -488,10 +488,10 @@ public function testRegister_wallet(): void
             echo "  📝 Registering wallet: $accountName\n";
             $result = $this->api->registerWallet($request);
     
-    $this->assertEquals(200, $result['Result'])
-    $this->assertNotNull($result['Response']['WalletAddress'])
-    $this->assertMatchesRegularExpression('/^(0x)?[0-9a-fA-F]+$/', $result['Response']['WalletAddress'])
-    $this->assertNotNull($result['Response']['TransactionID'])
+    $this->assertEquals(200, $result['Result']);
+    $this->assertNotNull($result['Response']['WalletAddress']);
+    $this->assertMatchesRegularExpression('/^(0x)?[0-9a-fA-F]+$/', $result['Response']['WalletAddress']);
+    $this->assertNotNull($result['Response']['TransactionID']);
     
             echo "  ✅ Wallet registered successfully\n";
             echo "  📍 Wallet Address: " . $result['Response']['WalletAddress'] . "\n";
@@ -527,9 +527,9 @@ public function testCertify_data(): void
             echo "  📝 Certifying data on blockchain...\n";
             $result = $this->api->sendTransaction($request);
     
-    $this->assertEquals(200, $result['Result'])
-    $this->assertNotNull($result['Response']['TransactionID'])
-    $this->assertMatchesRegularExpression('/^(0x)?[0-9a-fA-F]+$/', $result['Response']['TransactionID'])
+    $this->assertEquals(200, $result['Result']);
+    $this->assertNotNull($result['Response']['TransactionID']);
+    $this->assertMatchesRegularExpression('/^(0x)?[0-9a-fA-F]+$/', $result['Response']['TransactionID']);
     
             echo "  ✅ Data certified successfully\n";
             echo "  🔗 Transaction ID: " . $result['Response']['TransactionID'] . "\n";
@@ -557,7 +557,7 @@ public function testCall_contract(): void
             echo "  📝 Calling smart contract function...\n";
             $result = $this->api->callContract($request);
     
-    $this->assertNotNull($result['Result'])
+    $this->assertNotNull($result['Result']);
     
             echo "  ✅ Contract call executed (may have failed if contract doesn't exist)\n";
             echo "  📊 Result: " . $result['Result'] . "\n";
