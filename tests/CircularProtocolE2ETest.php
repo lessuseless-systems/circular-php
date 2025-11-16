@@ -38,8 +38,13 @@ use PHPUnit\Framework\TestCase;
 class CircularProtocolE2ETest extends TestCase
 {
     private CircularProtocolAPI $api;
+
+    /** @var array<int, string> */
     private static array $readEnvVars = ['CIRCULAR_TEST_ADDRESS'];
+
+    /** @var array<int, string> */
     private static array $writeEnvVars = ['CIRCULAR_PRIVATE_KEY'];
+
     private static bool $hasReadEnv;
     private static bool $hasWriteEnv;
 
@@ -86,7 +91,7 @@ class CircularProtocolE2ETest extends TestCase
     {
         $nagUrl = getenv('CIRCULAR_NAG_URL') ?: 'https://nag.circularlabs.io/NAG.php?cep=';
         $apiKey = getenv('CIRCULAR_API_KEY');
-        $this->api = new CircularProtocolAPI($nagUrl, $apiKey);
+        $this->api = new CircularProtocolAPI($nagUrl, $apiKey !== false ? $apiKey : null);
     }
 
     // Wallet API E2E Tests (Read-Only)
@@ -467,6 +472,9 @@ $this->assertNotNull($result['Result']);
 public function testRegister_wallet(): void
 {
     $privateKey = getenv('CIRCULAR_PRIVATE_KEY');
+    if ($privateKey === false) {
+        $this->markTestSkipped('CIRCULAR_PRIVATE_KEY not set');
+    }
     $publicKey = $this->api->getPublicKey($privateKey);
     $address = $this->api->hashString($publicKey);
 
@@ -501,6 +509,9 @@ public function testRegister_wallet(): void
 public function testCertify_data(): void
 {
     $privateKey = getenv('CIRCULAR_PRIVATE_KEY');
+    if ($privateKey === false) {
+        $this->markTestSkipped('CIRCULAR_PRIVATE_KEY not set');
+    }
     $publicKey = $this->api->getPublicKey($privateKey);
     $address = $this->api->hashString($publicKey);
 
@@ -539,6 +550,9 @@ public function testCertify_data(): void
 public function testCall_contract(): void
 {
     $privateKey = getenv('CIRCULAR_PRIVATE_KEY');
+    if ($privateKey === false) {
+        $this->markTestSkipped('CIRCULAR_PRIVATE_KEY not set');
+    }
     $publicKey = $this->api->getPublicKey($privateKey);
     $address = $this->api->hashString($publicKey);
 

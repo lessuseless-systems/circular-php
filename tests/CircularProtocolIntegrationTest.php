@@ -24,7 +24,6 @@ class CircularProtocolIntegrationTest extends TestCase
 {
     private static CircularProtocolAPI $api;
     private const API_URL = 'http://localhost:8080';
-    private const API_VERSION = '1.0.8';
 
     public static function setUpBeforeClass(): void
     {

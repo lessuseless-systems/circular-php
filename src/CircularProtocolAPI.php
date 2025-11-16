@@ -145,8 +145,8 @@ class CircularProtocolAPI
      * - Auto-injects Version if not present
      * - Validates required fields
      *
-     * @param array $data Request data
-     * @return array Preprocessed data
+     * @param array<string, mixed> $data Request data
+     * @return array<string, mixed> Preprocessed data
      */
     private function preprocessRequest(array $data): array
     {
@@ -179,8 +179,8 @@ class CircularProtocolAPI
      * Make HTTP request to NAG endpoint
      *
      * @param string $endpoint Endpoint path (e.g., '/checkWallet')
-     * @param array $data Request payload
-     * @return array Full API response with Result and Response fields
+     * @param array<string, mixed> $data Request payload
+     * @return array<string, mixed> Full API response with Result and Response fields
      * @throws CircularProtocolException
      */
     private function makeRequest(string $endpoint, array $data): array
@@ -246,7 +246,8 @@ class CircularProtocolAPI
         }
 
         // Parse JSON response
-        $result = json_decode($response, true);
+        $responseString = is_string($response) ? $response : (string)$response;
+        $result = json_decode($responseString, true);
         if ($result === null && json_last_error() !== JSON_ERROR_NONE) {
             throw new CircularProtocolException(
                 'Failed to parse JSON response: ' . json_last_error_msg(),
@@ -274,8 +275,8 @@ class CircularProtocolAPI
  * Checks whether a wallet address exists on the specified blockchain.
 Returns existence status and confirms the address format.
  *
- * @param array $request Request parameters
- * @return array Response with Result and Response fields
+ * @param array<string, mixed> $request Request parameters
+ * @return array<string, mixed> Response with Result and Response fields
  * @throws CircularProtocolException
  */
 public function checkWallet(array $request): array
@@ -287,8 +288,8 @@ public function checkWallet(array $request): array
  * Retrieves complete wallet information including balance and nonce.
 Returns all wallet properties including current state on the blockchain.
  *
- * @param array $request Request parameters
- * @return array Response with Result and Response fields
+ * @param array<string, mixed> $request Request parameters
+ * @return array<string, mixed> Response with Result and Response fields
  * @throws CircularProtocolException
  */
 public function getWallet(array $request): array
@@ -300,8 +301,8 @@ public function getWallet(array $request): array
  * Retrieves the latest transactions for a wallet address.
 Returns an array of transaction objects with details.
  *
- * @param array $request Request parameters
- * @return array Response with Result and Response fields
+ * @param array<string, mixed> $request Request parameters
+ * @return array<string, mixed> Response with Result and Response fields
  * @throws CircularProtocolException
  */
 public function getLatestTransactions(array $request): array
@@ -313,8 +314,8 @@ public function getLatestTransactions(array $request): array
  * Retrieves the balance of a specified asset in a wallet.
 Returns the balance amount for the requested asset.
  *
- * @param array $request Request parameters
- * @return array Response with Result and Response fields
+ * @param array<string, mixed> $request Request parameters
+ * @return array<string, mixed> Response with Result and Response fields
  * @throws CircularProtocolException
  */
 public function getWalletBalance(array $request): array
@@ -326,8 +327,8 @@ public function getWalletBalance(array $request): array
  * Retrieves the nonce (transaction counter) of a wallet.
 The nonce is used for transaction ordering and must increment with each transaction.
  *
- * @param array $request Request parameters
- * @return array Response with Result and Response fields
+ * @param array<string, mixed> $request Request parameters
+ * @return array<string, mixed> Response with Result and Response fields
  * @throws CircularProtocolException
  */
 public function getWalletNonce(array $request): array
@@ -339,8 +340,8 @@ public function getWalletNonce(array $request): array
  * Submits a transaction to the blockchain. Requires a complete signed transaction
 including ID, addresses, payload, nonce, and signature.
  *
- * @param array $request Request parameters
- * @return array Response with Result and Response fields
+ * @param array<string, mixed> $request Request parameters
+ * @return array<string, mixed> Response with Result and Response fields
  * @throws CircularProtocolException
  */
 public function sendTransaction(array $request): array
@@ -352,8 +353,8 @@ public function sendTransaction(array $request): array
  * Searches for a transaction by ID among pending transactions.
 Returns the transaction if it exists and is still pending.
  *
- * @param array $request Request parameters
- * @return array Response with Result and Response fields
+ * @param array<string, mixed> $request Request parameters
+ * @return array<string, mixed> Response with Result and Response fields
  * @throws CircularProtocolException
  */
 public function getPendingTransaction(array $request): array
@@ -365,8 +366,8 @@ public function getPendingTransaction(array $request): array
  * Finds a transaction by ID within a specified block range.
 Searches through blocks to locate the transaction.
  *
- * @param array $request Request parameters
- * @return array Response with Result and Response fields
+ * @param array<string, mixed> $request Request parameters
+ * @return array<string, mixed> Response with Result and Response fields
  * @throws CircularProtocolException
  */
 public function getTransactionById(array $request): array
@@ -378,8 +379,8 @@ public function getTransactionById(array $request): array
  * Finds transactions by node ID within a specified block range.
 Returns all transactions associated with the node.
  *
- * @param array $request Request parameters
- * @return array Response with Result and Response fields
+ * @param array<string, mixed> $request Request parameters
+ * @return array<string, mixed> Response with Result and Response fields
  * @throws CircularProtocolException
  */
 public function getTransactionByNode(array $request): array
@@ -391,8 +392,8 @@ public function getTransactionByNode(array $request): array
  * Finds transactions by wallet address within a specified block range.
 Returns transactions where the address is sender or recipient.
  *
- * @param array $request Request parameters
- * @return array Response with Result and Response fields
+ * @param array<string, mixed> $request Request parameters
+ * @return array<string, mixed> Response with Result and Response fields
  * @throws CircularProtocolException
  */
 public function getTransactionByAddress(array $request): array
@@ -404,8 +405,8 @@ public function getTransactionByAddress(array $request): array
  * Finds transactions by wallet address within a specified date range.
 Returns all transactions for the address between the dates.
  *
- * @param array $request Request parameters
- * @return array Response with Result and Response fields
+ * @param array<string, mixed> $request Request parameters
+ * @return array<string, mixed> Response with Result and Response fields
  * @throws CircularProtocolException
  */
 public function getTransactionByDate(array $request): array
@@ -417,8 +418,8 @@ public function getTransactionByDate(array $request): array
  * Retrieves a desired block by block number.
 Returns complete block information including transactions and hash.
  *
- * @param array $request Request parameters
- * @return array Response with Result and Response fields
+ * @param array<string, mixed> $request Request parameters
+ * @return array<string, mixed> Response with Result and Response fields
  * @throws CircularProtocolException
  */
 public function getBlock(array $request): array
@@ -430,8 +431,8 @@ public function getBlock(array $request): array
  * Retrieves all blocks in a specified range.
 If End = 0, then Start is the number of blocks from the last one minted going backward.
  *
- * @param array $request Request parameters
- * @return array Response with Result and Response fields
+ * @param array<string, mixed> $request Request parameters
+ * @return array<string, mixed> Response with Result and Response fields
  * @throws CircularProtocolException
  */
 public function getBlockRange(array $request): array
@@ -442,8 +443,8 @@ public function getBlockRange(array $request): array
  * Get blockchain height
  * Retrieves the blockchain block height (total number of blocks).
  *
- * @param array $request Request parameters
- * @return array Response with Result and Response fields
+ * @param array<string, mixed> $request Request parameters
+ * @return array<string, mixed> Response with Result and Response fields
  * @throws CircularProtocolException
  */
 public function getBlockCount(array $request): array
@@ -455,8 +456,8 @@ public function getBlockCount(array $request): array
  * Retrieves blockchain analytics and statistics.
 Returns comprehensive information about the blockchain state.
  *
- * @param array $request Request parameters
- * @return array Response with Result and Response fields
+ * @param array<string, mixed> $request Request parameters
+ * @return array<string, mixed> Response with Result and Response fields
  * @throws CircularProtocolException
  */
 public function getAnalytics(array $request): array
@@ -468,8 +469,8 @@ public function getAnalytics(array $request): array
  * Tests smart contract execution locally without sending a transaction.
 Useful for testing contract logic before deploying or executing.
  *
- * @param array $request Request parameters
- * @return array Response with Result and Response fields
+ * @param array<string, mixed> $request Request parameters
+ * @return array<string, mixed> Response with Result and Response fields
  * @throws CircularProtocolException
  */
 public function testContract(array $request): array
@@ -481,8 +482,8 @@ public function testContract(array $request): array
  * Calls a smart contract function on the blockchain.
 Executes the specified function with provided parameters.
  *
- * @param array $request Request parameters
- * @return array Response with Result and Response fields
+ * @param array<string, mixed> $request Request parameters
+ * @return array<string, mixed> Response with Result and Response fields
  * @throws CircularProtocolException
  */
 public function callContract(array $request): array
@@ -494,8 +495,8 @@ public function callContract(array $request): array
  * Retrieves the list of all assets minted on a specific blockchain.
 Returns an array of asset information.
  *
- * @param array $request Request parameters
- * @return array Response with Result and Response fields
+ * @param array<string, mixed> $request Request parameters
+ * @return array<string, mixed> Response with Result and Response fields
  * @throws CircularProtocolException
  */
 public function getAssetList(array $request): array
@@ -507,8 +508,8 @@ public function getAssetList(array $request): array
  * Retrieves an asset descriptor with complete asset information.
 Returns detailed information about the specified asset.
  *
- * @param array $request Request parameters
- * @return array Response with Result and Response fields
+ * @param array<string, mixed> $request Request parameters
+ * @return array<string, mixed> Response with Result and Response fields
  * @throws CircularProtocolException
  */
 public function getAsset(array $request): array
@@ -520,8 +521,8 @@ public function getAsset(array $request): array
  * Retrieves the total, circulating, and residual supply of a specified asset.
 Returns comprehensive supply metrics.
  *
- * @param array $request Request parameters
- * @return array Response with Result and Response fields
+ * @param array<string, mixed> $request Request parameters
+ * @return array<string, mixed> Response with Result and Response fields
  * @throws CircularProtocolException
  */
 public function getAssetSupply(array $request): array
@@ -533,8 +534,8 @@ public function getAssetSupply(array $request): array
  * Retrieves an existing voucher by code.
 Code is automatically stripped of 0x prefix if present.
  *
- * @param array $request Request parameters
- * @return array Response with Result and Response fields
+ * @param array<string, mixed> $request Request parameters
+ * @return array<string, mixed> Response with Result and Response fields
  * @throws CircularProtocolException
  */
 public function getVoucher(array $request): array
@@ -546,8 +547,8 @@ public function getVoucher(array $request): array
  * Resolves a domain name to a wallet address.
 A single wallet can have multiple domain associations.
  *
- * @param array $request Request parameters
- * @return array Response with Result and Response fields
+ * @param array<string, mixed> $request Request parameters
+ * @return array<string, mixed> Response with Result and Response fields
  * @throws CircularProtocolException
  */
 public function getDomain(array $request): array
@@ -559,8 +560,8 @@ public function getDomain(array $request): array
  * Retrieves the list of blockchains available in the network.
 Returns information about all active and inactive blockchains.
  *
- * @param array $request Request parameters
- * @return array Response with Result and Response fields
+ * @param array<string, mixed> $request Request parameters
+ * @return array<string, mixed> Response with Result and Response fields
  * @throws CircularProtocolException
  */
 public function getBlockchains(array $request): array
@@ -590,8 +591,8 @@ public function getBlockchains(array $request): array
  *   "Version": "1.0.9"
  * }
  *
- * @param array $request Request parameters for wallet registration
- * @return array API response with Result and Response fields
+ * @param array<string, mixed> $request Request parameters for wallet registration
+ * @return array<string, mixed> API response with Result and Response fields
  * @throws CircularProtocolException
  */
 public function registerWallet(array $request): array
@@ -643,6 +644,9 @@ public function verifySignature(string $publicKey, string $message, string $sign
         // Parse public key
         $cleanPubKey = $this->hexFix($publicKey);
         $pubKeyBytes = hex2bin($cleanPubKey);
+        if ($pubKeyBytes === false) {
+            return false;
+        }
 
         // Add uncompressed point prefix if needed (0x04)
         if (strlen($pubKeyBytes) === 64) {
@@ -696,7 +700,10 @@ public function getPublicKey(string $privateKey): string {
 
     // Extract X and Y coordinates (remove 0x04 prefix)
     $publicKeyBytes = hex2bin($point);
-    if ($publicKeyBytes[0] === "\x04") {
+    if ($publicKeyBytes === false) {
+        throw new \RuntimeException('Failed to decode public key');
+    }
+    if (isset($publicKeyBytes[0]) && $publicKeyBytes[0] === "\x04") {
         $publicKeyBytes = substr($publicKeyBytes, 1);
     }
 
@@ -748,7 +755,11 @@ public function stringToHex(string $str): string {
  */
 public function hexToString(string $hexString): string {
     $normalized = $this->hexFix($hexString);
-    return hex2bin($normalized);
+    $result = hex2bin($normalized);
+    if ($result === false) {
+        throw new \RuntimeException('Failed to decode hex string');
+    }
+    return $result;
 }
 
 /**
@@ -816,7 +827,7 @@ private function handleError(\Throwable|string $error): void {
  * @param string $end End block number for search
  * @param int $timeoutSec Maximum time to wait in seconds (default: 120)
  * @param int $intervalSec Polling interval in seconds (default: 5)
- * @return array Transaction response when confirmed
+ * @return array<string, mixed> Transaction response when confirmed
  * @throws CircularProtocolException if transaction fails or times out
  */
 public function getTransactionOutcome(

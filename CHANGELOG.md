@@ -23,9 +23,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Optimized test execution order
 - **GitHub Actions CI/CD Workflow** - Automated testing and deployment
   - Multi-version PHP testing (8.0, 8.1, 8.2, 8.3)
-  - Code quality checks (PHPStan, CodeSniffer)
+  - Code quality checks (PHPStan Level 8, CodeSniffer)
   - E2E testing with environment variables
   - Automated Packagist publishing
+- **PHPStan Level 8 Compliance** - Strictest static analysis level with 0 errors
+  - Complete type hints for all method parameters and return values
+  - Proper handling of functions that can return false (hex2bin, getenv, etc.)
+  - Array type specifications: `array<string, mixed>` for all associative arrays
+  - Removed all unused code and variables
 - **Configuration Methods** for auto-preprocessing
   - `setDefaultVersion(string)` / `getDefaultVersion()`
   - `setAutoPreprocess(bool)` / `getAutoPreprocess()`
