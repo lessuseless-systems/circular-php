@@ -868,7 +868,7 @@ public function getError(): string {
  * @param \Throwable|string $error Error object or string
  * @return void
  */
-public function handleError(\Throwable|string $error): void {
+private function handleError(\Throwable|string $error): void {
     if ($error instanceof \Throwable) {
         $this->lastError = $error->getMessage();
     } elseif (is_string($error)) {

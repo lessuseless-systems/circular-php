@@ -14,7 +14,7 @@ Add the following utility/configuration methods to match Python and Dart SDKs:
 
 ### Error Handling Methods
 - [x] `getError(): string` - Get last error message from SDK
-- [x] `handleError(\Throwable|string $error): void` - Handle API error responses
+- [x] `handleError(\Throwable|string $error): void` - Handle API error responses (private method for internal use)
 
 ### Lifecycle Methods
 - [x] `dispose(): void` - Clean up resources (HTTP client, etc.)
