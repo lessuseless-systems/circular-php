@@ -42,6 +42,9 @@ class CircularProtocolAPI
     /** @var string Default API version */
     private string $defaultVersion = '1.0.9';
 
+    /** @var string|null Primary node address for blockchain queries */
+    private ?string $nodeAddress = null;
+
     /**
      * Create a new Circular Protocol API client
      *
@@ -137,6 +140,63 @@ class CircularProtocolAPI
     public function getDefaultVersion(): string
     {
         return $this->defaultVersion;
+    }
+
+    /**
+     * Set custom HTTP header
+     *
+     * @param string $key Header key
+     * @param string $value Header value
+     * @return void
+     */
+    public function setHeader(string $key, string $value): void
+    {
+        $this->headers[$key] = $value;
+    }
+
+    /**
+     * Get SDK version
+     *
+     * @return string SDK version
+     */
+    public function getVersion(): string
+    {
+        return '1.0.9';
+    }
+
+    /**
+     * Set primary node address for blockchain queries
+     *
+     * @param string $address Node address
+     * @return void
+     */
+    public function setNode(string $address): void
+    {
+        $this->nodeAddress = $address;
+    }
+
+    /**
+     * Get primary node address
+     *
+     * @return string|null Current node address
+     */
+    public function getNode(): ?string
+    {
+        return $this->nodeAddress;
+    }
+
+    /**
+     * Clean up resources (HTTP client, etc.)
+     *
+     * @return void
+     */
+    public function dispose(): void
+    {
+        // Clear sensitive data
+        $this->nagKey = '';
+        $this->headers = [];
+        $this->lastError = '';
+        $this->nodeAddress = null;
     }
 
     /**
@@ -808,7 +868,7 @@ public function getError(): string {
  * @param \Throwable|string $error Error object or string
  * @return void
  */
-private function handleError(\Throwable|string $error): void {
+public function handleError(\Throwable|string $error): void {
     if ($error instanceof \Throwable) {
         $this->lastError = $error->getMessage();
     } elseif (is_string($error)) {
