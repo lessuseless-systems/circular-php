@@ -24,7 +24,7 @@ class CircularProtocolUnitTest extends TestCase
     public function testConstructorSetsDefaultNagUrl(): void
     {
         $api = new CircularProtocolAPI();
-        $this->assertEquals('https://nag.circularlabs.io/NAG.php?cep=', $api->getNagUrl());
+        $this->assertEquals('https://nag.circularlabs.io/NAG.php', $api->getNagUrl());
     }
 
     public function testConstructorAcceptsCustomNagUrl(): void

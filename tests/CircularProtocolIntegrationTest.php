@@ -23,7 +23,7 @@ use Circular\Protocol\CircularProtocolAPI;
 class CircularProtocolIntegrationTest extends TestCase
 {
     private static CircularProtocolAPI $api;
-    private const API_URL = 'http://localhost:8080';
+    private const API_URL = 'https://nag.circularlabs.io/NAG.php';
 
     public static function setUpBeforeClass(): void
     {

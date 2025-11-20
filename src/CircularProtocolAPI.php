@@ -53,7 +53,7 @@ class CircularProtocolAPI
      */
     public function __construct(?string $nagUrl = null, ?string $nagKey = null)
     {
-        $this->nagUrl = $nagUrl ?? 'https://nag.circularlabs.io/NAG.php?cep=';
+        $this->nagUrl = $nagUrl ?? 'https://nag.circularlabs.io/NAG.php';
         $this->nagKey = $nagKey ?? '';
         $this->headers = [];
     }
@@ -248,7 +248,7 @@ class CircularProtocolAPI
         // Preprocess request data
         $data = $this->preprocessRequest($data);
 
-        $url = $this->nagUrl . 'Circular_' . $endpoint . '_';
+        $url = $this->nagUrl . '?cep=Circular_' . $endpoint;
 
         // Build headers
         $headers = array_merge($this->headers, [

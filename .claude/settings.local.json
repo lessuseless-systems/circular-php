@@ -9,7 +9,14 @@
       "Bash(nix-shell:*)",
       "Bash(nix flake update:*)",
       "Bash(git add:*)",
-      "Bash(nix develop:*)"
+      "Bash(nix develop:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr edit:*)",
+      "Read(//persist/home/lessuseless/Projects/Orgs/Circular-Protocol/circular-dart/**)"
     ],
     "deny": [],
     "ask": []
