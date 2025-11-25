@@ -243,7 +243,7 @@ class CircularProtocolAPI
      * @return array<string, mixed> Full API response with Result and Response fields
      * @throws CircularProtocolException
      */
-    private function makeRequest(string $endpoint, array $data): array
+    private function makeRequest(string $endpoint, array $data, int $timeout = 30): array
     {
         // Preprocess request data
         $data = $this->preprocessRequest($data);
@@ -278,7 +278,7 @@ class CircularProtocolAPI
             CURLOPT_POST => true,
             CURLOPT_POSTFIELDS => json_encode($data),
             CURLOPT_HTTPHEADER => $curlHeaders,
-            CURLOPT_TIMEOUT => 30,
+            CURLOPT_TIMEOUT => $timeout,
         ]);
 
         // Execute request
@@ -407,6 +407,26 @@ including ID, addresses, payload, nonce, and signature.
 public function sendTransaction(array $request): array
 {
     return $this->makeRequest('AddTransaction', $request);
+}
+
+/**
+ * Send a batch of transactions
+ *
+ * @param array<mixed> $transactions List of transaction objects
+ * @return array<string, mixed> Response with Result and Response fields
+ */
+public function sendBatch(array $transactions): array
+{
+    $data = ['Transactions' => $transactions];
+    try {
+        return $this->makeRequest('AddBatch', $data, 120);
+    } catch (CircularProtocolException $e) {
+        return [
+            'success' => false,
+            'message' => 'Server unreachable or request timeout',
+            'error' => $e->getMessage()
+        ];
+    }
 }
 /**
  * Get pending transaction by ID
